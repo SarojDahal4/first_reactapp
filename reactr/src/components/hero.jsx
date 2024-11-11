@@ -12,6 +12,8 @@ const Hero = () => {
   const [books, setBooks] = useState([]);
   const navigate = useNavigate();
 
+  const [search, setSearch] = useState("");
+
   const AddBook = async () => {
     let formField = new FormData();
 
@@ -60,7 +62,6 @@ const Hero = () => {
           <img src="/public/images/vite.svg" alt="iujyhg" />
         </div>
       </main>
-
       <h1>ADD Books Name:</h1>
       <input
         type="text"
@@ -89,22 +90,46 @@ const Hero = () => {
       <Button className="btn btn-success" onClick={AddBook}>
         Sumit
       </Button>
+      <h1>Search Function...............</h1>
+      <input
+        type="search"
+        className="form-control form-control-lg"
+        placeholder="Enter the Name of the books"
+        onChange={(e) => setSearch(e.target.value)}
+      />
 
       <h1>Show the list of all the books:</h1>
       <div className="card_1">
-        {books.map((book, index) => (
-          <div>
-            <Card style={{ width: "18rem" }}>
-              {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
-              <Card.Body key={book.id}>
-                <Card.Title>{book.name}</Card.Title>
-                <Card.Text>{book.publication_date}</Card.Text>
-
-                <Button>{book.genre}</Button>
-              </Card.Body>
-            </Card>
-          </div>
-        ))}
+      {books
+  .filter((book) => {
+    return search.toLowerCase() === "" // If no search term, return all books
+      ? book
+      : book.name.toLowerCase().includes(search.toLowerCase()); // Compare both in lowercase
+  })
+  .length === 0 ? (
+    // If no books match the search, show "No Data Found"
+    <div>No Data Found</div>
+  ) : (
+    books
+      .filter((book) => {
+        return search.toLowerCase() === ""
+          ? book
+          : book.name.toLowerCase().includes(search.toLowerCase());
+      })
+      .map((book) => (
+        <div key={book.id}>
+          <Card style={{ width: "18rem" }}>
+            {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
+            <Card.Body>
+              <Card.Title>{book.name}</Card.Title>
+              <Card.Text>{book.publication_date}</Card.Text>
+              <Button>{book.genre}</Button>
+            </Card.Body>
+          </Card>
+        </div>
+      ))
+  )}
+,
       </div>
     </>
   );
